@@ -36,7 +36,6 @@ module.exports = function (context) {
         } else if (node.raw === "### 経験値" && nextNode.raw !== "### 本文") {
           reportResult(node, "経験値の後に本文がありません。");
         } else if (node.raw === "### 本文") {
-          // loc: { start: { line: 77, column: 0 }, end: { line: 77, column: 6 } }
           const nowNode = children.findIndex(
             (n) => n.loc.start.line === node.loc.start.line
           );
@@ -51,8 +50,19 @@ module.exports = function (context) {
               reportResult(node, "本文の後に問題がありません。");
             }
           }
-        } else if (node.raw === "### 問題" && nextNode.raw !== "### 解説") {
-          reportResult(node, "問題の後に解説がありません。");
+        } else if (node.raw === "### 問題") {
+          const nowNode = children.findIndex(
+            (n) => n.loc.start.line === node.loc.start.line
+          );
+          // nodeのline ~ ---(HorizontalRule)までに、### 問題があるかどうか
+          for (let i = nowNode; i < children.length; i++) {
+            if (children[i].raw === "### 解説") {
+              break;
+            }
+            if (children[i].type === "HorizontalRule") {
+              reportResult(node, "問題の後に解説がありません。");
+            }
+          }
         }
       });
     },
