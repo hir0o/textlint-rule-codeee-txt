@@ -29,11 +29,19 @@ module.exports = function (context) {
       let nextNode = "";
       headerNodes.forEach((node, index) => {
         nextNode = headerNodes[index + 1];
-        if (node.depth == 2 && nextNode.raw !== "### 概要") {
+        if (node.depth == 2 && nextNode && nextNode.raw !== "### 概要") {
           reportResult(node, "タイトルの後に概要がありません。");
-        } else if (node.raw === "### 概要" && nextNode.raw !== "### 経験値") {
+        } else if (
+          node.raw === "### 概要" &&
+          nextNode &&
+          nextNode.raw !== "### 経験値"
+        ) {
           reportResult(node, "概要の後に経験値がありません。");
-        } else if (node.raw === "### 経験値" && nextNode.raw !== "### 本文") {
+        } else if (
+          node.raw === "### 経験値" &&
+          nextNode &&
+          nextNode.raw !== "### 本文"
+        ) {
           reportResult(node, "経験値の後に本文がありません。");
         } else if (node.raw === "### 本文") {
           const nowNode = children.findIndex(
