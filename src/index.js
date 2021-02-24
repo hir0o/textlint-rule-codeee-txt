@@ -40,16 +40,17 @@ module.exports = function (context) {
           const nowNode = children.findIndex(
             (n) => n.loc.start.line === node.loc.start.line
           );
+          // nodeのline ~ ---(HorizontalRule)までに、### 問題があるかどうか
           for (let i = nowNode; i < children.length; i++) {
             if (children[i].raw === "### 問題") {
               break;
             }
             if (children[i].type === "HorizontalRule") {
               // HorizontalRuleがあったら終了
+              // TODO: そもそもHorizontalがなかったらエラーが起きないので、Horizontalがレッスンごとに存在しているかルールを作成
               reportResult(node, "本文の後に問題がありません。");
             }
           }
-          // nodeのline ~ ---(HorizontalRule)までに、### 問題があるかどうか
         } else if (node.raw === "### 問題" && nextNode.raw !== "### 解説") {
           reportResult(node, "問題の後に解説がありません。");
         }
